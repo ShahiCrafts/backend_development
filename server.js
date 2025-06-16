@@ -4,6 +4,7 @@ const express = require('express'); // express => web framework to build WebAPIs
 const dotenv = require('dotenv'); // dotenv => loads .env config file into process.env
 // Importing connectDB() method from database.js
 const connectDB = require('./config/database');
+const errorHandler = require('././middleware/errorHandler')
 
 const cors = require('cors');
 
@@ -15,6 +16,7 @@ connectDB(); // requesting a connection to MongoDB server using Mongoose.
 const app = express(); // This object(app) is used to configure app, define routes and start the server.
 
 app.use(cors());
+app.use(errorHandler);
 
 // This method is used to add middleware to our application.
 app.use(express.json()); // express.json() is used to parse incoming JSON requests.
