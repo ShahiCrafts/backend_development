@@ -1,24 +1,4 @@
-# Project Name
-
-![Project Logo or Banner](link-to-logo-or-image)
-
-## Table of Contents
-
-- [Overview](#overview)  
-- [Features](#features)  
-- [Tech Stack](#tech-stack)  
-- [Getting Started](#getting-started)  
-- [Environment Variables](#environment-variables)  
-- [API Documentation](#api-documentation)  
-- [Error Handling](#error-handling)  
-- [Authentication & Authorization](#authentication--authorization)  
-- [Testing](#testing)  
-- [Deployment](#deployment)  
-- [Contributing](#contributing)  
-- [License](#license)  
-- [Contact](#contact)  
-
----
+# OnGo Desk Backend
 
 ## Overview
 
