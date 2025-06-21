@@ -1,39 +1,84 @@
-// Importing express module into our file
-const express = require('express'); // express => web framework to build WebAPIs, such as handling routes, HTTP requests, middleware, etc.
-// Importing dotenv module into our file
-const dotenv = require('dotenv'); // dotenv => loads .env config file into process.env
-// Importing connectDB() method from database.js
-const connectDB = require('./config/database');
-const errorHandler = require('././middleware/errorHandler')
+/**
+ * @file Entry point for the Civic Engagement Backend API.
+ * Initializes the Express server, connects to MongoDB, and sets up global middleware and routes.
+ */
 
-const cors = require('cors');
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./config/database");
+// const errorHandler = require('./middleware/errorHandler');
 
-dotenv.config(); // Configuring the environment variables.
+// Load environment variables from .env
+dotenv.config();
 
-connectDB(); // requesting a connection to MongoDB server using Mongoose.
+/**
+ * Connect to MongoDB using Mongoose.
+ * Exits the process if the connection fails.
+ */
+connectDB();
 
-// const variable to hold instance of the express application after initialization.
-const app = express(); // This object(app) is used to configure app, define routes and start the server.
+// Initialize the Express application
+const app = express();
 
+/**
+ * Enable Cross-Origin Resource Sharing for all incoming requests.
+ * @see https://expressjs.com/en/resources/middleware/cors.html
+ */
 app.use(cors());
-app.use(errorHandler);
 
-// This method is used to add middleware to our application.
-app.use(express.json()); // express.json() is used to parse incoming JSON requests.
+/**
+ * Middleware to parse incoming JSON requests.
+ * Automatically populates req.body with parsed content.
+ */
+app.use(express.json());
 
-// This method mounts the middleware to the specified path.
-// app.use('/api/users', require('./routes/userRoute')); // This is the base url that the routes in the userRoutes will be associated with.
-// Any requests that starts with /api/users will be handles by userRoutes.
-app.use('/auth', require('./routes/authRoutes'))
-// declares a constant port that our application will listen on.
-const PORT = process.env.PORT || 8080; // || 8080: This is a fallback value, if process.env.PORT is not defined, the application will fall back to port 8080.
+/**
+ * Mount authentication-related routes (e.g., login, signup, verification).
+ * Base path: /auth
+ */
+app.use("/api/auth", require("./routes/user/authRoutes"));
 
-// This method tells express to start the server and listen for incoming requests on the specified port.
-app.listen(PORT, ()=> {
-    console.log(`Server running on port ${PORT}`);
+/**
+ * Mount admin-only user management routes.
+ * Base path: /api/admin/users
+ * Requires authentication and admin role authorization.
+ */
+app.use("/api/admin/users", require("./routes/admin/userRoutes"));
+
+/**
+ * Mount admin-only announcement management routes.
+ * Base path: /api/admin/announcements
+ * Requires authentication and admin role authorization.
+ */
+app.use(
+  "/api/admin/announcements",
+  require("./routes/admin/announcementRoutes")
+);
+app.use("/api/admin/events", require("./routes/admin/eventRoutes"));
+
+/**
+ * Global error handler to catch and process all unhandled errors.
+ * Should be registered after all routes.
+ */
+// app.use(errorHandler);
+
+/**
+ * Health check / welcome route.
+ * Can be used to verify that the server is running.
+ * @route GET /
+ * @returns {string} Basic welcome message
+ */
+app.get("/", (req, res) => {
+  res.send("Civic Engagement API is running on port 8080");
 });
 
-// This defines a GET route for the path '/' root URL.
-app.get('/', (req, res) => {
-    res.send('API is running on port 8080');
+/**
+ * Start the Express server on the configured port.
+ * @constant {number} PORT - Port number from environment or default 8080
+ */
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
