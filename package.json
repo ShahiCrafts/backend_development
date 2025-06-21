@@ -15,7 +15,9 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
-    "nodemailer": "^7.0.3"
+    "multer": "^2.0.1",
+    "nodemailer": "^7.0.3",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "dotenv": "^16.5.0",
