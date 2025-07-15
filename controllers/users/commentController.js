@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Comment = require('../../models/commentModel');
-const Post = require('../../models/postModel');
+const Post = require('../../models/PostModel');
 const Notification = require('../../models/notificationModel'); // Import Notification model
 const User = require('../../models/userModel'); // Import User model to get sender's full name
 
