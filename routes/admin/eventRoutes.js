@@ -1,16 +1,16 @@
-const express = require('express');
-const router = express.Router();
-const eventController = require('../../controllers/admin/eventController');
-const upload = require('../../middleware/upload');
+// const express = require('express');
+// const router = express.Router();
+// const eventController = require('../../controllers/admin/eventController');
+// const upload = require('../../middleware/upload');
 
-router.get('/', eventController.getAllEvents);
+// router.get('/', eventController.getAllEvents);
 
-router.get('/:id', eventController.getEventById);
+// router.get('/:id', eventController.getEventById);
 
-router.post('/', upload.single('coverImage'), eventController.createEvent);
+// router.post('/', upload.single('coverImage'), eventController.createEvent);
 
-router.put('/:id', upload.single('coverImage'), eventController.updateEvent);
+// router.put('/:id', upload.single('coverImage'), eventController.updateEvent);
 
-router.delete('/:id', eventController.deleteEvent);
+// router.delete('/:id', eventController.deleteEvent);
 
-module.exports = router;
+// module.exports = router;
