@@ -1,29 +1,38 @@
 const jwt = require('jsonwebtoken');
-const TokenBlacklist = require('../models/tokenBlacklistModel');
 
-const JWT_SECRET = process.env.JWT_SECRET;
+/**
+ * Middleware to verify JWT token from the Authorization header.
+ * This version includes detailed error logging.
+ */
+const verifyToken = (req, res, next) => {
+  // Log the incoming request to see which route is being processed.
+  console.log(`--- Verifying Token for: ${req.method} ${req.originalUrl} ---`);
+  
+  const authHeader = req.headers['authorization'];
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.error("verifyToken Error: No token or malformed header found.");
+    return res.status(401).json({ error: 'No token provided or header is malformed.' });
+  }
 
-const verifyToken = async(req, res, next) => {
-    const authHeader = req.headers.authorization;
+  const token = authHeader.split(' ')[1];
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'Authorization token missing or malformed.' });
+  // Verify the token
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    // --- FIX IS HERE ---
+    // If there is an error, log it to the console before sending a response.
+    if (err) {
+      console.error("--- JWT VERIFICATION FAILED ---");
+      console.error("Error Details:", err);
+      console.error("-----------------------------");
+      // Send a 401 Unauthorized status, as the token is not valid for this request.
+      return res.status(401).json({ error: 'Token is not valid.', details: err.message });
     }
-
-    const token = authHeader.split(' ')[1];
-
-    try {
-        const blacklistedToken = await TokenBlacklist.findOne({ token });
-        if (blacklistedToken) {
-            return res.status(401).json({ message: 'Token has been invalidated. Please log in again.'})
-        }
-
-        const decoded = jwt.verify(token, JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        return res.status(403).json({ message: 'Invalid or expired token.' });
-    }
+    
+    // If verification is successful, attach the user payload and proceed.
+    req.user = user;
+    next();
+  });
 };
 
 module.exports = { verifyToken };
