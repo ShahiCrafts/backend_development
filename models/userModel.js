@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: ['citizen', 'admin', 'official'],
-        default: 'public',
+        default: 'citizen',
     },
 
     emailVerified: {
@@ -78,6 +78,12 @@ const userSchema = new mongoose.Schema({
     },
 
     lastLogin: Date,
+
+    achievements: [{
+        name: { type: String, required: true },
+        description: String,
+        dateAchieved: { type: Date, default: Date.now }
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
